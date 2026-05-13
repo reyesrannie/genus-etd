@@ -1,0 +1,47 @@
+import { DialogActions, DialogContent, Skeleton, Stack, useMediaQuery } from "@mui/material";
+import React from "react";
+
+const LoadingForm = () => {
+  const isLaptop = useMediaQuery("(min-width:1024px)");
+
+  return (
+    <Stack>
+      <DialogContent>
+        <Stack gap={0.5}>
+          <Stack
+            gap={0.5}
+            display={isLaptop ? "grid" : null}
+            gridTemplateColumns="repeat(2, minmax(250px, 1fr))"
+            rowGap={1}
+            columnGap={2}
+            sx={{
+              borderRadius: 2,
+            }}
+          >
+            <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+            <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+            <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+            <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+          </Stack>
+          <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+          <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+          <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Stack
+          display="flex"
+          flexDirection="row"
+          gap={1}
+          alignSelf={"flex-end"}
+          padding={1}
+        >
+          <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+          <Skeleton variant="rectangular" sx={{ fontSize: "30px" }} />
+        </Stack>
+      </DialogActions>
+    </Stack>
+  );
+};
+
+export default LoadingForm;
