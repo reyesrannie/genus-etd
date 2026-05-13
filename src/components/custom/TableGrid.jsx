@@ -22,7 +22,28 @@ const TableGrid = ({
   onSelect,
   onView,
   multipleView,
+  userData,
 }) => {
+  const customName = (value) => {
+    const accountName = userData?.find(
+      (user) => user?.id === value,
+    )?.account_name;
+
+    if (!accountName) return "\u2014";
+
+    const nameParts = accountName.trim().split(/\s+/);
+
+    if (nameParts.length === 1) {
+      return nameParts[0].toLowerCase();
+    }
+
+    const lastName = nameParts.pop();
+
+    const initials = nameParts.map((name) => name[0]);
+
+    return [...initials, lastName].join("").toLowerCase();
+  };
+
   return (
     <TableContainer>
       <Table>
@@ -30,7 +51,7 @@ const TableGrid = ({
           <TableRow>
             {header?.map((head, index) => {
               const hasValue = items?.data?.some(
-                (i) => i?.[head?.value] !== null
+                (i) => i?.[head?.value] !== null,
               );
 
               if (head?.type === "qty" && !hasValue) return null;
@@ -53,7 +74,7 @@ const TableGrid = ({
               >
                 {header?.map((head, index) => {
                   const hasValue = items?.data?.some(
-                    (i) => i?.[head?.value] !== null
+                    (i) => i?.[head?.value] !== null,
                   );
 
                   if (head?.type === "qty" && !hasValue) return null;
@@ -130,7 +151,7 @@ const TableGrid = ({
                       {head?.type === "time" && (
                         <Typography>
                           {dayjs(
-                            `${dayjs().format("YYYY-MM-DD")}T${i[head?.value]}`
+                            `${dayjs().format("YYYY-MM-DD")}T${i[head?.value]}`,
                           ).format("hh:mm a")}
                         </Typography>
                       )}
@@ -138,12 +159,18 @@ const TableGrid = ({
                       {head?.type === "date" && (
                         <Typography>
                           {moment(new Date(i[head?.value])).format(
-                            "MMM DD, YYYY"
+                            "MMM DD, YYYY",
                           )}
                         </Typography>
                       )}
                       {head?.type === "parent" && (
                         <Typography>{i[head.value]?.[head.child]}</Typography>
+                      )}
+
+                      {head?.type === "customName" && (
+                        <Typography>
+                          {customName(i[head.value]?.[head.child])}
+                        </Typography>
                       )}
 
                       {head?.type === "multiple" && (

@@ -29,6 +29,7 @@ import { exportExcel } from "../../services/functions/reusableFunctions";
 import { exportHeader } from "../../services/constant/systemConstants";
 import { enqueueSnackbar } from "notistack";
 import AppDateFilter from "../../components/custom/AppDateFilter";
+import { useUsersQuery } from "../../services/server/api/usersAPI";
 
 const OrderTaker = () => {
   const dispatch = useDispatch();
@@ -49,6 +50,16 @@ const OrderTaker = () => {
   const { data, isLoading, isFetching, isError, isSuccess } =
     useOrderTakerQuery(params);
 
+  const {
+    data: userData,
+    isLoading: userLoading,
+    isError: userError,
+    isSuccess: userSuccess,
+  } = useUsersQuery({
+    status: "active",
+    pagination: "none",
+  });
+
   const [getOrder, { isLoading: loadingExport }] = useLazyOrderTakerQuery();
 
   const header = [
@@ -67,6 +78,12 @@ const OrderTaker = () => {
       value: "requestor",
       child: "name",
       type: "parent",
+    },
+    {
+      name: "Name",
+      value: "requestor",
+      child: "id",
+      type: "customName",
     },
     {
       name: "Customer",
@@ -108,7 +125,7 @@ const OrderTaker = () => {
       await exportExcel(
         res?.result,
         exportHeader,
-        header?.find((h) => params?.status === h?.value)?.label
+        header?.find((h) => params?.status === h?.value)?.label,
       );
     } catch (error) {
       enqueueSnackbar("Something went wrong while exporting data", {
@@ -167,12 +184,13 @@ const OrderTaker = () => {
         </Stack>
       </Stack>
 
-      {isFetching ? (
+      {isFetching || userLoading ? (
         <MobileLoading />
-      ) : isError ? (
+      ) : isError || userError ? (
         <NoDataFound />
       ) : (
         <TableGrid
+          userData={userData?.result}
           header={tableHeader}
           items={data?.result}
           onSelect={(e, i) => {
@@ -183,7 +201,7 @@ const OrderTaker = () => {
           }}
         />
       )}
-      {isSuccess && (
+      {isSuccess && userSuccess && (
         <Stack alignItems={"flex-start"} pt={1}>
           <Button
             loading={loadingExport}
@@ -196,7 +214,7 @@ const OrderTaker = () => {
           </Button>
         </Stack>
       )}
-      {isSuccess && (
+      {isSuccess && userSuccess && (
         <CustomPagination
           data={data?.result}
           onPageChange={onPageChange}
