@@ -20,7 +20,6 @@ const Redirect = () => {
     if (rawData) {
       sessionStorage.clear();
       dispatch(resetAuth());
-      console.log(rawData);
     }
 
     try {

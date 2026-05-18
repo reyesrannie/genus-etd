@@ -50,16 +50,6 @@ const OrderTaker = () => {
   const { data, isLoading, isFetching, isError, isSuccess } =
     useOrderTakerQuery(params);
 
-  const {
-    data: userData,
-    isLoading: userLoading,
-    isError: userError,
-    isSuccess: userSuccess,
-  } = useUsersQuery({
-    status: "active",
-    pagination: "none",
-  });
-
   const [getOrder, { isLoading: loadingExport }] = useLazyOrderTakerQuery();
 
   const header = [
@@ -76,13 +66,13 @@ const OrderTaker = () => {
     {
       name: "Requestor",
       value: "requestor",
-      child: "name",
+      child: "username",
       type: "parent",
     },
     {
       name: "Name",
       value: "requestor",
-      child: "id",
+      child: "name",
       type: "customName",
     },
     {
@@ -184,13 +174,12 @@ const OrderTaker = () => {
         </Stack>
       </Stack>
 
-      {isFetching || userLoading ? (
+      {isFetching ? (
         <MobileLoading />
-      ) : isError || userError ? (
+      ) : isError ? (
         <NoDataFound />
       ) : (
         <TableGrid
-          userData={userData?.result}
           header={tableHeader}
           items={data?.result}
           onSelect={(e, i) => {
@@ -201,7 +190,7 @@ const OrderTaker = () => {
           }}
         />
       )}
-      {isSuccess && userSuccess && (
+      {isSuccess && (
         <Stack alignItems={"flex-start"} pt={1}>
           <Button
             loading={loadingExport}
@@ -214,7 +203,7 @@ const OrderTaker = () => {
           </Button>
         </Stack>
       )}
-      {isSuccess && userSuccess && (
+      {isSuccess && (
         <CustomPagination
           data={data?.result}
           onPageChange={onPageChange}

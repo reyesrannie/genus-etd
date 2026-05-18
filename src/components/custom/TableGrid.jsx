@@ -22,16 +22,11 @@ const TableGrid = ({
   onSelect,
   onView,
   multipleView,
-  userData,
 }) => {
   const customName = (value) => {
-    const accountName = userData?.find(
-      (user) => user?.id === value,
-    )?.account_name;
+    if (!value) return "\u2014";
 
-    if (!accountName) return "\u2014";
-
-    const nameParts = accountName.trim().split(/\s+/);
+    const nameParts = value.trim().split(/\s+/);
 
     if (nameParts.length === 1) {
       return nameParts[0].toLowerCase();
